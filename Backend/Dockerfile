@@ -17,6 +17,9 @@ RUN wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.102/bin/apache-tomcat-9.0
 # Set the working directory to Tomcat
 WORKDIR /opt/apache-tomcat-9.0.102
 
+# Ensure shell scripts are executable
+RUN chmod +x bin/*.sh
+
 # Download and place the WAR file and MySQL connector
 RUN wget https://s3-us-west-2.amazonaws.com/studentapi-cit/student.war -O webapps/student.war && \
     wget https://s3-us-west-2.amazonaws.com/studentapi-cit/mysql-connector.jar -O lib/mysql-connector.jar
@@ -27,5 +30,5 @@ COPY context.xml conf/context.xml
 # Expose the Tomcat port
 EXPOSE 8080
 
-# Start Tomcat
-CMD ["apache-tomcat-9.0.102/bin/catalina.sh", "run"]
+# Start Tomcat (corrected)
+CMD ["bin/catalina.sh", "run"]
