@@ -1,0 +1,6 @@
+File: /etc/prometheus/prometheus.yml
+...
+- job_name: 'docker-containers'
+  scrape_interval: 10s
+  static_configs:
+    - targets: ['backend-service:8080']

@@ -38,5 +38,5 @@ networks:
   app-network:
 
 volumes:
-  mysql_data:           
+  mysql_data: /var/lib/mysql          
 
