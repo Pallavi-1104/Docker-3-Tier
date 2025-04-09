@@ -12,7 +12,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql  
+      - mysql_data:/var/lib/mysql
     networks:
       - app-network
 
@@ -32,7 +32,7 @@ services:
     depends_on:
       - database
     networks:
-      - app-network 
+      - app-network
 
   prometheus:
     image: prom/prometheus
@@ -83,3 +83,4 @@ networks:
 
 volumes:
   mysql_data:
+
