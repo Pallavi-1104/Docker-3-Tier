@@ -3,7 +3,7 @@ version: '3.8'
 services:
   database:
     build:
-      context: ./Database
+      context: ../Database
       dockerfile: Dockerfile
     container_name: my-mysql-db
     environment:
@@ -18,7 +18,7 @@ services:
 
   backend:
     build:
-      context: ./Backend
+      context: ../Backend
       dockerfile: Dockerfile
     container_name: backend-service
     environment:
@@ -38,7 +38,7 @@ services:
     image: prom/prometheus
     container_name: prometheus
     volumes:
-      - ./Monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ../Monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
     networks:
@@ -54,9 +54,9 @@ services:
     networks:
       - app-network
     volumes:
-      - ./Monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
-      - ./Monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
-      - ./Monitoring/grafana/provisioning/dashboards.yml:/etc/grafana/provisioning/dashboards.yml
+      - ../Monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ../Monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ../Monitoring/grafana/provisioning/dashboards.yml:/etc/grafana/provisioning/dashboards.yml
 
   node-exporter:
     image: prom/node-exporter
@@ -83,4 +83,3 @@ networks:
 
 volumes:
   mysql_data:
-
