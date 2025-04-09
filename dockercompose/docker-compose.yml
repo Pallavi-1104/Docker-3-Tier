@@ -2,27 +2,27 @@ version: '3.8'
 
 services:
   database:
-          build:
-            context: ./Database
-            dockerfile: Dockerfile
-          container-name: my-mysql-db
-          enviornment:
-            MYSQL_ROOT_PASSWORD: 123
-            MYSQL_DATABASE: studentapp 
-          ports:
-            - "3306:3306"
-          volumes:
-            - mysql_data:/var/lib/mysql  
-          networks:
-            - app-network
+    build:
+      context: ./Database
+      dockerfile: Dockerfile
+    container_name: my-mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_DATABASE: studentapp
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql  
+    networks:
+      - app-network
 
   backend:
     build:
       context: ./Backend
       dockerfile: Dockerfile
-    container-name: backend-service
-    enviornment:
-      DB_HOST: db
+    container_name: backend-service
+    environment:
+      DB_HOST: my-mysql-db
       DB_PORT: 3306
       DB_NAME: studentapp
       DB_USER: root
@@ -30,38 +30,35 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      - database
     networks:
       - app-network 
 
-networks:
-  app-network:
-
-volumes:
-  mysql_data: /var/lib/mysql  
-
-
-prometheus:
+  prometheus:
     image: prom/prometheus
     container_name: prometheus
     volumes:
-      - ../Monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./Monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     ports:
       - "9090:9090"
     networks:
       - app-network
 
-grafana:
+  grafana:
     image: grafana/grafana
     container_name: grafana
     ports:
       - "3000:3000"
-    networks:
-      - app-network
     depends_on:
       - prometheus
+    networks:
+      - app-network
+    volumes:
+      - ./Monitoring/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources
+      - ./Monitoring/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards
+      - ./Monitoring/grafana/provisioning/dashboards.yml:/etc/grafana/provisioning/dashboards.yml
 
-node-exporter:
+  node-exporter:
     image: prom/node-exporter
     container_name: node-exporter
     ports:
@@ -69,14 +66,21 @@ node-exporter:
     networks:
       - app-network
 
-mysql-exporter:
+  mysql-exporter:
     image: prom/mysqld-exporter
     container_name: mysql-exporter
     environment:
       - DATA_SOURCE_NAME=root:123@(my-mysql-db:3306)/
     ports:
       - "9104:9104"
+    depends_on:
+      - database
     networks:
       - app-network
 
+networks:
+  app-network:
+
+volumes:
+  mysql_data:
 
